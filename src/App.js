@@ -14,10 +14,7 @@ const CodeContainer = styled.div`
   }
 `;
 
-const StyledTextarea = styled.textarea`
-  width: 50%;
-  height: 50%px;
-`;
+const StyledTextarea = styled.p``;
 
 const TestResultDiv = styled.div`
   // width: 400px;
@@ -38,7 +35,7 @@ function App() {
 
   useEffect(() => {
     const getQuestion = async () => {
-      const response = await axios.get("https://minseob-codegame.koyeb.app/question");
+      const response = await axios.get("https://minseob-codegame.koyeb.app/question/");
       const question = response.data.question;
       setQuestion(question);
     };
@@ -60,7 +57,7 @@ function App() {
   return (
     <>
       <CodeContainer>
-        <StyledTextarea value={question}></StyledTextarea>
+        <StyledTextarea>{question}</StyledTextarea>
         <CodeMirror
           value={value}
           height="200px"
