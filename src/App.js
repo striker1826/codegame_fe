@@ -8,11 +8,15 @@ const CodeContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 50px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const StyledTextarea = styled.textarea`
   width: 50%;
-  height: 400px;
+  height: 50%px;
 `;
 
 const TestResultDiv = styled.div`
@@ -34,7 +38,7 @@ function App() {
 
   useEffect(() => {
     const getQuestion = async () => {
-      const response = await axios.get("http://localhost:8000/question");
+      const response = await axios.get("https://minseob-codegame.koyeb.app/question");
       const question = response.data.question;
       setQuestion(question);
     };
@@ -43,7 +47,7 @@ function App() {
   }, []);
 
   const submit = async () => {
-    const response = await axios.post("http://localhost:8000/question/grading/2", {
+    const response = await axios.post("https://minseob-codegame.koyeb.app/question/grading/2", {
       code: value,
     });
     const testResult = response.data;
