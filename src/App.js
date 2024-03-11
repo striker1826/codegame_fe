@@ -21,7 +21,7 @@ const TestResultDiv = styled.div`
 `;
 
 function App() {
-  const [value, setValue] = useState(`function solution(a, b) {
+  const [value, setValue] = useState(`function solution(n) {
 
   }`);
   const [testResult, setTestResult] = useState([]);
