@@ -23,8 +23,8 @@ const TestResultDiv = styled.div`
 
 function App() {
   const [value, setValue] = useState(`function solution(n) {
-
-  }`);
+  
+}`);
   const [testResult, setTestResult] = useState([]);
 
   const [question, setQuestion] = useState();
@@ -35,7 +35,8 @@ function App() {
 
   useEffect(() => {
     const getQuestion = async () => {
-      const response = await axios.get("https://minseob-codegame.koyeb.app/question/");
+      // const response = await axios.get("https://minseob-codegame.koyeb.app/question/");
+      const response = await axios.get("https://minseob-codegame.koyeb.app/api/question");
       const question = response.data.question;
       setQuestion(question);
     };
@@ -43,12 +44,26 @@ function App() {
     getQuestion();
   }, []);
 
+  const runCode = async (code) => {
+    try {
+      const result = await eval(code + `solution()`);
+      return result;
+    } catch (err) {
+      return err;
+    }
+  };
+
   const submit = async () => {
-    const response = await axios.post("https://minseob-codegame.koyeb.app/question/grading/2", {
-      code: value,
-    });
+    const codeResult = await runCode(value);
+    if (codeResult instanceof Error) {
+      console.log(codeResult);
+      return;
+    }
+    // const response = await axios.post("http://localhost:8000/api/question/grading/2", { code: value });
+    const response = await axios.post("https://minseob-codegame.koyeb.app/api/question/grading/2", { code: value });
+
     const testResult = response.data;
-    console.log(testResult);
+
     setTestResult((prev) => {
       return [...testResult];
     });
