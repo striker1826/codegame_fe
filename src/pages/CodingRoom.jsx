@@ -4,7 +4,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import { QnA } from "../components/QnA";
 
-const socket = io.connect("http://localhost:8000");
+const socket = io.connect("https://minseob-codegame.koyeb.app/");
 
 const Container = styled.div`
   background-color: #b4c3ff;
@@ -31,8 +31,8 @@ export function CodingRoom() {
 
   useEffect(() => {
     const getQuestion = async () => {
-      //   const response = await axios.get("https://minseob-codegame.koyeb.app/api/question");
-      const response = await axios.get("http://localhost:8000/api/question");
+      const response = await axios.get("https://minseob-codegame.koyeb.app/api/question");
+      //   const response = await axios.get("http://localhost:8000/api/question");
       const question = response.data.question;
       setQuestion(question);
     };
@@ -85,9 +85,9 @@ export function CodingRoom() {
       return;
     }
 
-    // const response = await axios.post("https://minseob-codegame.koyeb.app/api/question/grading/2", { code });
     try {
-      const response = await axios.post("http://localhost:8000/api/question/grading/2", { code });
+      const response = await axios.post("https://minseob-codegame.koyeb.app/api/question/grading/2", { code });
+      //   const response = await axios.post("http://localhost:8000/api/question/grading/2", { code });
       const testResult = response.data;
       if (testResult.some((result) => result === false)) {
         alert("테스트를 통과하지 못했습니다.");
