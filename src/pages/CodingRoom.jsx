@@ -3,20 +3,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { QnA } from "../components/QnA";
+import { Result } from "../components/Result";
 
 const socket = io.connect("https://minseob-codegame.koyeb.app/");
+// const socket = io.connect("http://localhost:8000/");
 
 const Container = styled.div`
   background-color: #b4c3ff;
   padding: 30px 50px;
-`;
-
-const TestResultDiv = styled.div``;
-
-const ChatContainer = styled.div`
-  width: 300px;
-  height: 300px;
-  background-color: #f5f5f5;
 `;
 
 export function CodingRoom() {
@@ -32,7 +26,7 @@ export function CodingRoom() {
   useEffect(() => {
     const getQuestion = async () => {
       const response = await axios.get("https://minseob-codegame.koyeb.app/api/question");
-      //   const response = await axios.get("http://localhost:8000/api/question");
+      // const response = await axios.get("http://localhost:8000/api/question");
       const question = response.data.question;
       setQuestion(question);
     };
@@ -54,6 +48,7 @@ export function CodingRoom() {
     socket.emit("sendMessage", { roomname: "firstRoom", message });
   };
 
+  // socket on functions ===================================
   useEffect(() => {
     socket.on("joinRoom", (data) => {
       setChat((prev) => [...prev, data.message]);
@@ -65,6 +60,13 @@ export function CodingRoom() {
       setChat((prev) => [...prev, data.message]);
     });
   }, [socket]);
+
+  useEffect(() => {
+    socket.on("playerLose", (data) => {
+      alert("you lose");
+    });
+  }, [socket]);
+  // =======================================================
 
   const runCode = async (code) => {
     try {
@@ -87,15 +89,19 @@ export function CodingRoom() {
 
     try {
       const response = await axios.post("https://minseob-codegame.koyeb.app/api/question/grading/2", { code });
-      //   const response = await axios.post("http://localhost:8000/api/question/grading/2", { code });
+      // const response = await axios.post("http://localhost:8000/api/question/grading/2", { code });
       const testResult = response.data;
       if (testResult.some((result) => result === false)) {
         alert("테스트를 통과하지 못했습니다.");
         return;
+      } else {
+        socket.emit("playerWin", { roomname: "firstRoom" });
+        alert("테스트를 통과했습니다.");
+        return;
       }
-
-      alert("테스트를 통과했습니다.");
-    } catch (err) {}
+    } catch (err) {
+      // TODO: status code handling....
+    }
 
     setTestResult((prev) => {
       return [...testResult];
@@ -115,22 +121,14 @@ export function CodingRoom() {
     <Container>
       <QnA question={question} onChangeCode={onChangeCode} code={code} />
       <button onClick={submit}>제출</button>
-      {codeError ? <p>{codeError}</p> : null}
-      {testResult.map((result, i) => {
-        return (
-          <TestResultDiv key={i}>
-            <h3>Test {i + 1}</h3>
-            <p>Result: {result.result}</p>
-          </TestResultDiv>
-        );
-      })}
-      <ChatContainer>
+      <Result codeError={codeError} />
+      {/* <ChatContainer>
         {chat.map((msg) => {
           return <p>{msg}</p>;
         })}
-      </ChatContainer>
-      <input onChange={handleToMessage} />
-      <button onClick={() => sendMessage(message)}>전송</button>
+      </ChatContainer> */}
+      {/* <input onChange={handleToMessage} /> */}
+      {/* <button onClick={() => sendMessage(message)}>전송</button> */}
       <button onClick={createRoom}>생성</button>
       <button onClick={joinRoom}>입장</button>
     </Container>
