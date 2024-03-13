@@ -23,7 +23,6 @@ export function CodingRoom() {
   const [code, setCode] = useState(`function solution(n) {
   
 }`);
-
   const [testResult, setTestResult] = useState([]);
   const [question, setQuestion] = useState("");
   const [chat, setChat] = useState([]);
