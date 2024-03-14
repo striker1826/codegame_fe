@@ -1,101 +1,76 @@
 import { styled } from "styled-components";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { io } from "socket.io-client";
 import { QnA } from "../components/QnA";
 import { Result } from "../components/Result";
+import axios from "axios";
+import { GithubLogin } from "../components/auth/GithubLogin";
 
-const socket = io.connect("https://minseob-codegame.koyeb.app/");
-// const socket = io.connect("http://localhost:8000/");
+const BASE_URL = "https://minseob-codegame.koyeb.app";
+// const BASE_URL = "http://localhost:8000";
 
 const Container = styled.div`
   background-color: #b4c3ff;
   padding: 30px 50px;
 `;
 
-export function CodingRoom() {
-  const [code, setCode] = useState(`function solution(n) {
-  
-}`);
+export function CodingRoom({ socket }) {
+  const [codeInfo, setCodeInfo] = useState({ code: "", questionId: 0, question: "" });
   const [testResult, setTestResult] = useState([]);
-  const [question, setQuestion] = useState("");
-  const [chat, setChat] = useState([]);
-  const [message, setMessage] = useState("");
   const [codeError, setCodeError] = useState("");
 
   useEffect(() => {
     const getQuestion = async () => {
-      const response = await axios.get("https://minseob-codegame.koyeb.app/api/question");
-      // const response = await axios.get("http://localhost:8000/api/question");
-      const question = response.data.question;
-      setQuestion(question);
+      const response = await axios.get(`${BASE_URL}/api/question`);
+      const data = response.data;
+
+      setCodeInfo((prev) => {
+        return {
+          ...prev,
+          code: data.format,
+          questionId: data.questionId,
+          question: data.question,
+        };
+      });
     };
 
     getQuestion();
   }, []);
 
   // socket useEffect
-  const createRoom = () => {
-    socket.emit("createRoom", { roomname: "firstRoom" });
-  };
-
-  const joinRoom = () => {
-    socket.emit("joinRoom", { roomname: "firstRoom", message: "hello" });
-  };
-
-  const sendMessage = (message) => {
-    setChat((prev) => [...prev, message]);
-    socket.emit("sendMessage", { roomname: "firstRoom", message });
-  };
 
   // socket on functions ===================================
   useEffect(() => {
-    socket.on("joinRoom", (data) => {
-      setChat((prev) => [...prev, data.message]);
-    });
+    socket.on("joinRoom", (data) => {});
   }, [socket]);
 
-  useEffect(() => {
-    socket.on("receiveMessage", (data) => {
-      setChat((prev) => [...prev, data.message]);
-    });
-  }, [socket]);
-
-  useEffect(() => {
-    socket.on("playerLose", (data) => {
-      alert("you lose");
-    });
-  }, [socket]);
   // =======================================================
 
   const runCode = async (code) => {
     try {
-      console.log(code);
       const output = await eval(code + `solution(1)`);
-      console.log(output);
       return output;
     } catch (err) {
-      console.log(err);
       return err;
     }
   };
 
   const submit = async () => {
-    const codeResult = await runCode(code);
+    const codeResult = await runCode(codeInfo.code);
     if (codeResult instanceof Error) {
       setCodeError(String(codeResult));
       return;
     }
 
     try {
-      const response = await axios.post("https://minseob-codegame.koyeb.app/api/question/grading/2", { code });
-      // const response = await axios.post("http://localhost:8000/api/question/grading/2", { code });
+      const response = await axios.post(`${BASE_URL}/api/question/grading/2`, { code: codeInfo.code });
       const testResult = response.data;
+      console.log(testResult);
       if (testResult.some((result) => result === false)) {
         alert("테스트를 통과하지 못했습니다.");
         return;
       } else {
-        socket.emit("playerWin", { roomname: "firstRoom" });
+        await socket.emit("playerWin");
         alert("테스트를 통과했습니다.");
         return;
       }
@@ -108,29 +83,20 @@ export function CodingRoom() {
     });
   };
 
-  const handleToMessage = ({ target }) => {
-    setMessage(target.value);
-  };
-
   const onChangeCode = (value) => {
-    setCode(value);
+    setCodeInfo((prev) => {
+      return {
+        ...prev,
+        code: value,
+      };
+    });
   };
 
-  console.log(question);
   return (
     <Container>
-      <QnA question={question} onChangeCode={onChangeCode} code={code} />
+      <QnA question={codeInfo.question} onChangeCode={onChangeCode} code={codeInfo.code} />
       <button onClick={submit}>제출</button>
       <Result codeError={codeError} />
-      {/* <ChatContainer>
-        {chat.map((msg) => {
-          return <p>{msg}</p>;
-        })}
-      </ChatContainer> */}
-      {/* <input onChange={handleToMessage} /> */}
-      {/* <button onClick={() => sendMessage(message)}>전송</button> */}
-      <button onClick={createRoom}>생성</button>
-      <button onClick={joinRoom}>입장</button>
     </Container>
   );
 }

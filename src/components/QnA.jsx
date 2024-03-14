@@ -18,7 +18,6 @@ const Question = styled.div`
 `;
 
 export const QnA = ({ question, code, onChangeCode }) => {
-  console.log(question);
   return (
     <Container>
       <Question>
