@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { QnA } from "../components/QnA";
 import { Result } from "../components/Result";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Timer } from "../components/Timer";
 
@@ -46,6 +46,7 @@ export function CodingRoom() {
   const [isLeaveRoom, setIsLeaveRoom] = useState(false);
   const [isTimer, setIsTimer] = useState(false);
   const params = new URLSearchParams(window.location.search);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const roomname = params.get("roomname");
@@ -108,11 +109,10 @@ export function CodingRoom() {
 
   useEffect(() => {
     socket.on("leaveRoom", (data) => {
-      console.log(data);
-      alert(data);
       setIsLeaveRoom(true);
+      alert(data);
     });
-  });
+  }, [socket]);
   // =======================================================
 
   const runCode = async (code) => {
@@ -176,10 +176,12 @@ export function CodingRoom() {
     setIsReady(false);
     setIsTimer(false);
     setIsEnd(false);
+    setIsLeaveRoom(false);
   };
 
   const handleLeaveRoom = () => {
-    window.location.href = "/lobby";
+    navigate("/lobby");
+    window.location.reload();
   };
 
   const ReReady = isReady ? <Btn>준비완료</Btn> : <Btn onClick={handleToStart}>다시하기</Btn>;
@@ -201,9 +203,8 @@ export function CodingRoom() {
 
           <QnA question={codeInfo.question} onChangeCode={onChangeCode} code={codeInfo.code} />
           <BtnContainer>
-            {isStart ? null : Ready}
+            {isStart ? <Btn onClick={submit}>제출</Btn> : Ready}
 
-            <Btn onClick={submit}>제출</Btn>
             <Btn onClick={handleLeaveRoom}>방 나가기</Btn>
           </BtnContainer>
           <Result codeError={codeError} />

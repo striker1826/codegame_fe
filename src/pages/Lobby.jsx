@@ -2,8 +2,6 @@ import { styled } from "styled-components";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
-import { CodingRoom } from "./CodingRoom";
-import { GithubLogin } from "../components/auth/GithubLogin";
 
 const BASE_URL = "https://minseob-codegame.koyeb.app";
 // const BASE_URL = "http://localhost:8000";
@@ -58,6 +56,20 @@ export const Lobby = () => {
       alert("you lose");
     });
   }, [socket]);
+
+  useEffect(() => {
+    socket.on("createdRoom", (data) => {
+      const getRoomList = async () => {
+        const res = await axios.get(`${BASE_URL}/api/room/list`);
+        const data = res.data;
+        setRoomList((prev) => {
+          return [...data];
+        });
+      };
+
+      getRoomList();
+    });
+  }, [socket]);
   // =======================================================
 
   useEffect(() => {
@@ -69,6 +81,7 @@ export const Lobby = () => {
       });
     };
 
+    socket.emit("enterLobby", () => {});
     getRoomList();
   }, []);
 
