@@ -15,14 +15,33 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
+const RoomContainer = styled.div`
+  display: flex;
+`;
+
+const StyledRoom = styled.button`
+  width: 100px;
+  height: 100px;
+  border: none;
+  background-color: #b4c3ff;
+  corlor: #fff;
+`;
+
 export const Lobby = () => {
   const [roomList, setRoomList] = useState([]);
   const [roomname, setRoomname] = useState("");
 
   const createRoom = async () => {
-    const res = await axios.post(`${BASE_URL}/api/room`, { roomname });
-    const roomData = res.data;
-    window.location.href = `/codingroom?roomname=${roomData.roomname}&key=${"create"}`;
+    try {
+      const res = await axios.post(`${BASE_URL}/api/room`, { roomname });
+      const roomData = res.data;
+      window.location.href = `/codingroom?roomname=${roomData.roomname}&key=${"create"}`;
+    } catch (err) {
+      const status = err.response.status;
+      if (status === 400) {
+        alert("이미 존재하는 방 이름입니다. 다른 이름을 입력해주세요.");
+      }
+    }
   };
 
   const joinRoom = (roomname) => {
@@ -59,15 +78,17 @@ export const Lobby = () => {
 
   return (
     <Container>
-      {roomList.map((room) => {
-        return (
-          <button key={room.roomId} onClick={() => joinRoom(room.roomname)}>
-            <p>{room.roomname}</p>
-          </button>
-        );
-      })}
+      <RoomContainer>
+        {roomList.map((room) => {
+          return (
+            <StyledRoom key={room.roomId} onClick={() => joinRoom(room.roomname)}>
+              <p>{room.roomname}</p>
+            </StyledRoom>
+          );
+        })}
+      </RoomContainer>
       <div style={{ marginTop: "60px" }}>
-        <input type="text" onChange={onChangeRoomname} />
+        <input type="text" maxLength={8} onChange={onChangeRoomname} />
         <button onClick={createRoom}>방 생성</button>
       </div>
     </Container>
