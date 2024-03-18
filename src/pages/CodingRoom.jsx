@@ -8,6 +8,7 @@ import axios from "axios";
 import { Timer } from "../components/Timer";
 
 const BASE_URL = "https://minseob-codegame.koyeb.app";
+
 // const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
