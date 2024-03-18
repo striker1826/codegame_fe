@@ -11,7 +11,7 @@ const getSeconds = (time) => {
 
 export const Timer = ({ limit, setIsEnd }) => {
   console.log(limit);
-  const [time, setTime] = useState(10); // 남은 시간 (단위: 초)
+  const [time, setTime] = useState(limit); // 남은 시간 (단위: 초)
 
   useEffect(() => {
     const timer = setInterval(() => {
