@@ -1,8 +1,8 @@
 import { styled } from "styled-components";
 
 const Container = styled.div`
-  width: 400px;
-  height: 400px;
+  background-color: #ffdaab;
+  margin-top: 30px;
 `;
 
 export const Result = ({ codeError }) => {

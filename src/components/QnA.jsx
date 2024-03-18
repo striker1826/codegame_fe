@@ -4,16 +4,16 @@ import { CodingEditor } from "./CodingEditor";
 
 const Container = styled.div`
   display: flex;
+  width: 100%;
   justify-content: space-between;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
+  flex-direction: column;
 `;
 
 const Question = styled.div`
-  width: 500px;
-  height: 200px;
+  padding: 30px;
+  width: 100%;
+  color: #fff;
   background-color: #5050ff;
 `;
 

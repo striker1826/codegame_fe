@@ -5,6 +5,6 @@ import { java } from "@codemirror/lang-java";
 
 export const CodingEditor = ({ code, onChange }) => {
   return (
-    <CodeMirror value={code} height="200px" width="500px" extensions={[javascript(), java()]} onChange={onChange} />
+    <CodeMirror value={code} height="300px" width="100%" extensions={[javascript(), java()]} onChange={onChange} />
   );
 };

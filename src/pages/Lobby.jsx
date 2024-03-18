@@ -18,20 +18,18 @@ const Container = styled.div`
 export const Lobby = () => {
   const [roomList, setRoomList] = useState([]);
   const [roomname, setRoomname] = useState("");
-  const [enterRoom, setEnterRoom] = useState(false);
+
+  const createRoom = async () => {
+    const res = await axios.post(`${BASE_URL}/api/room`, { roomname });
+    const roomData = res.data;
+    window.location.href = `/codingroom?roomname=${roomData.roomname}&key=${"create"}`;
+  };
+
+  const joinRoom = (roomname) => {
+    window.location.href = `/codingroom?roomname=${roomname}&key=${"join"}`;
+  };
 
   // socket useEffect
-  const createRoom = () => {
-    socket.emit("createRoom", { roomname });
-    setEnterRoom(true);
-  };
-
-  const joinRoom = (roomId, roomname) => {
-    socket.emit("joinRoom", { roomId, roomname });
-    setEnterRoom(true);
-  };
-
-  // socket on functions ===================================
   useEffect(() => {
     socket.on("joinRoom", (data) => {});
   }, [socket]);
@@ -60,25 +58,18 @@ export const Lobby = () => {
   };
 
   return (
-    <>
-      {enterRoom ? (
-        <CodingRoom socket={socket} />
-      ) : (
-        roomList.map((room) => {
-          console.log(room);
-          return (
-            <Container key={room.roomId}>
-              <button onClick={() => joinRoom(room.roomId, room.roomname)}>
-                <p>{room.roomname}</p>
-              </button>
-            </Container>
-          );
-        })
-      )}
+    <Container>
+      {roomList.map((room) => {
+        return (
+          <button key={room.roomId} onClick={() => joinRoom(room.roomname)}>
+            <p>{room.roomname}</p>
+          </button>
+        );
+      })}
       <div style={{ marginTop: "60px" }}>
         <input type="text" onChange={onChangeRoomname} />
         <button onClick={createRoom}>방 생성</button>
       </div>
-    </>
+    </Container>
   );
 };
