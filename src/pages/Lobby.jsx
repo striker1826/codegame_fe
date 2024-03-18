@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
-const BASE_URL = "https://minseob-codegame.koyeb.app";
-// const BASE_URL = "http://localhost:8000";
+// const BASE_URL = "https://minseob-codegame.koyeb.app";
+const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
 
