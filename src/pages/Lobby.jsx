@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
-// const BASE_URL = "https://minseob-codegame.koyeb.app";
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://minseob-codegame.koyeb.app";
+// const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
 
@@ -42,8 +42,16 @@ export const Lobby = () => {
     }
   };
 
-  const joinRoom = (roomname) => {
-    window.location.href = `/codingroom?roomname=${roomname}&key=${"join"}`;
+  const joinRoom = async (roomname) => {
+    try {
+      await axios.patch(`${BASE_URL}/api/room`, { roomname });
+      window.location.href = `/codingroom?roomname=${roomname}&key=${"join"}`;
+    } catch (err) {
+      const status = err.response.status;
+      if (status === 400) {
+        alert("방이 꽉 찼습니다.");
+      }
+    }
   };
 
   // socket useEffect
@@ -74,11 +82,15 @@ export const Lobby = () => {
 
   useEffect(() => {
     const getRoomList = async () => {
-      const res = await axios.get(`${BASE_URL}/api/room/list`);
-      const data = res.data;
-      setRoomList((prev) => {
-        return [...prev, ...data];
-      });
+      try {
+        const res = await axios.get(`${BASE_URL}/api/room/list`);
+        const data = res.data;
+        setRoomList((prev) => {
+          return [...prev, ...data];
+        });
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     socket.emit("enterLobby", () => {});
@@ -96,6 +108,7 @@ export const Lobby = () => {
           return (
             <StyledRoom key={room.roomId} onClick={() => joinRoom(room.roomname)}>
               <p>{room.roomname}</p>
+              <p>{room.count}/2</p>
             </StyledRoom>
           );
         })}

@@ -7,8 +7,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Timer } from "../components/Timer";
 
-// const BASE_URL = "https://minseob-codegame.koyeb.app";
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://minseob-codegame.koyeb.app";
+// const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
 
@@ -60,7 +60,11 @@ export function CodingRoom() {
     }
 
     if (key === "join") {
-      socket.emit("joinRoom", { roomname });
+      try {
+        socket.emit("joinRoom", { roomname });
+      } catch (err) {
+        console.log(err);
+      }
     }
   }, []);
 
