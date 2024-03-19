@@ -13,6 +13,7 @@ export const Redirect = () => {
       const code = params.get("code");
       const res = await axios.get(`${BASE_URL}/api/auth/github?code=${code}`);
       const access_token = res.data;
+      localStorage.setItem("access_token", access_token);
       axios.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
       window.location.href = "/lobby";
     };

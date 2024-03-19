@@ -5,11 +5,12 @@ import { Redirect } from "./components/auth/Redirect";
 import { Lobby } from "./pages/Lobby";
 
 export const App = () => {
+  const access_token = localStorage.getItem("access_token");
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<GithubLogin />}></Route>
-        <Route path="/lobby" element={<Lobby />}></Route>
+        <Route path="/lobby" element={access_token ? <Lobby /> : <GithubLogin />}></Route>
         <Route path="/codingroom" element={<CodingRoom />}></Route>
         <Route path="/github" element={<Redirect />}></Route>
       </Routes>
