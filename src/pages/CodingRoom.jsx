@@ -1,23 +1,16 @@
 import { styled } from "styled-components";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { QnA } from "../components/QnA";
-import { Result } from "../components/Result";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Timer } from "../components/Timer";
+import { GameEndPage } from "../components/GameEndPage";
+import { GamePage } from "../components/GamePage";
+import { GradeResult } from "../components/GradeResult";
 
 const BASE_URL = "https://minseob-codegame.koyeb.app";
 // const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
-
-const Container = styled.div`
-  background-color: #b4c3ff;
-  padding: 30px 50px;
-  width: 100%;
-  height: 100vh;
-`;
 
 const Btn = styled.button`
   color: #fff;
@@ -29,22 +22,17 @@ const Btn = styled.button`
   cursor: pointer;
 `;
 
-const BtnContainer = styled.div`
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-  gap: 50px;
-`;
-
 export function CodingRoom() {
   const [codeInfo, setCodeInfo] = useState({ code: "", questionId: 0, question: "", limit: "" });
-  const [testResult, setTestResult] = useState([]);
+  const [testCases, setTestCases] = useState([]);
   const [codeError, setCodeError] = useState("");
   const [isStart, setIsStart] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
+  const [isGrading, setIsGrading] = useState(false);
   const [isLeaveRoom, setIsLeaveRoom] = useState(false);
   const [isTimer, setIsTimer] = useState(false);
+  const [gradingResult, setGradingResult] = useState([]);
   const params = new URLSearchParams(window.location.search);
   const navigate = useNavigate();
 
@@ -86,13 +74,15 @@ export function CodingRoom() {
       setIsTimer(true);
       setIsReady(false);
 
+      setTestCases(() => [...data.testCases]);
+
       setCodeInfo((prev) => {
         return {
           ...prev,
-          code: data.format,
-          questionId: data.questionId,
-          question: data.question,
-          limit: Number(data.time) * 60,
+          code: data.question.format,
+          questionId: data.question.questionId,
+          question: data.question.question,
+          limit: Number(data.question.time) * 60,
         };
       });
     });
@@ -121,7 +111,7 @@ export function CodingRoom() {
 
   const runCode = async (code) => {
     try {
-      const output = await eval(code + `solution(1)`);
+      const output = await eval(code + `solution(${testCases[0].input})`);
       return output;
     } catch (err) {
       return err;
@@ -136,13 +126,17 @@ export function CodingRoom() {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/api/question/grading/2`, { code: codeInfo.code });
+      setIsGrading(true);
+      const response = await axios.post(`${BASE_URL}/api/grading/run/${codeInfo.questionId}`, { code: codeInfo.code });
       const testResult = response.data;
-      if (testResult.some((result) => result === false)) {
+
+      if (testResult.some((result) => result.result === "실패")) {
+        setGradingResult(() => [...testResult]);
         alert("테스트를 통과하지 못했습니다.");
         return;
       } else {
         setIsTimer(false);
+        setGradingResult(() => [...testResult]);
         await socket.emit("playerWin");
         alert("테스트를 통과했습니다.");
         setIsEnd(true);
@@ -150,11 +144,9 @@ export function CodingRoom() {
       }
     } catch (err) {
       // TODO: status code handling....
+    } finally {
+      setIsGrading(false);
     }
-
-    setTestResult((prev) => {
-      return [...testResult];
-    });
   };
 
   const onChangeCode = (value) => {
@@ -188,31 +180,32 @@ export function CodingRoom() {
     window.location.reload();
   };
 
-  const ReReady = isReady ? <Btn>준비완료</Btn> : <Btn onClick={handleToStart}>다시하기</Btn>;
-  const Ready = isReady ? <Btn>준비완료</Btn> : <Btn onClick={handleToStart}>준비</Btn>;
-
+  const ReReadyComponent = isReady ? <Btn>준비완료</Btn> : <Btn onClick={handleToStart}>다시하기</Btn>;
+  const ReadyComponent = isReady ? <Btn>준비완료</Btn> : <Btn onClick={handleToStart}>준비</Btn>;
+  const SubmitComponent = isStart ? <Btn onClick={submit}>제출</Btn> : ReadyComponent;
+  console.log(isEnd);
   return (
     <>
       {isEnd ? (
-        <Container>
-          <BtnContainer>
-            {isLeaveRoom ? <Btn onClick={onClickRoomReset}>방 초기화</Btn> : ReReady}
-
-            <Btn onClick={onClickLeaveRoom}>방 나가기</Btn>
-          </BtnContainer>
-        </Container>
+        <GameEndPage
+          isLeaveRoom={isLeaveRoom}
+          onClickRoomReset={onClickRoomReset}
+          onClickLeaveRoom={onClickLeaveRoom}
+          ReReadyComponent={ReReadyComponent}
+        />
       ) : (
-        <Container>
-          {isTimer && <Timer limit={codeInfo.limit} setIsEnd={setIsEnd} />}
-
-          <QnA question={codeInfo.question} onChangeCode={onChangeCode} code={codeInfo.code} />
-          <BtnContainer>
-            {isStart ? <Btn onClick={submit}>제출</Btn> : Ready}
-
-            <Btn onClick={handleLeaveRoom}>방 나가기</Btn>
-          </BtnContainer>
-          <Result codeError={codeError} />
-        </Container>
+        <GamePage
+          isTimer={isTimer}
+          codeInfo={codeInfo}
+          setIsEnd={setIsEnd}
+          onChangeCode={onChangeCode}
+          isGrading={isGrading}
+          SubmitComponent={SubmitComponent}
+          GradeResult={gradingResult}
+          handleLeaveRoom={handleLeaveRoom}
+          codeError={codeError}
+          testCases={testCases}
+        />
       )}
     </>
   );
