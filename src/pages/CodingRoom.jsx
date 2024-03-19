@@ -111,7 +111,7 @@ export function CodingRoom() {
 
   const runCode = async (code) => {
     try {
-      const output = await eval(code + `solution("${testCases[0].input}")`);
+      const output = await eval(code + `solution(${testCases[0].input})`);
       return output;
     } catch (err) {
       return err;
