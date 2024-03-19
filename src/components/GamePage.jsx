@@ -45,7 +45,6 @@ export const GamePage = ({
   codeError,
   testCases,
 }) => {
-  console.log(GradeResult);
   return (
     <Container>
       {isTimer && <Timer limit={codeInfo.limit} setIsEnd={setIsEnd} />}

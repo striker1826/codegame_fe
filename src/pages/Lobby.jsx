@@ -88,9 +88,7 @@ export const Lobby = () => {
         setRoomList((prev) => {
           return [...prev, ...data];
         });
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     };
 
     socket.emit("enterLobby", () => {});

@@ -50,9 +50,7 @@ export function CodingRoom() {
     if (key === "join") {
       try {
         socket.emit("joinRoom", { roomname });
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     }
   }, []);
 
@@ -112,6 +110,9 @@ export function CodingRoom() {
   const runCode = async (code) => {
     try {
       const output = await eval(code + `solution(${testCases[0].input})`);
+      console.log(testCases);
+      console.log(typeof output);
+      console.log(output);
       return output;
     } catch (err) {
       return err;
@@ -183,7 +184,7 @@ export function CodingRoom() {
   const ReReadyComponent = isReady ? <Btn>준비완료</Btn> : <Btn onClick={handleToStart}>다시하기</Btn>;
   const ReadyComponent = isReady ? <Btn>준비완료</Btn> : <Btn onClick={handleToStart}>준비</Btn>;
   const SubmitComponent = isStart ? <Btn onClick={submit}>제출</Btn> : ReadyComponent;
-  console.log(isEnd);
+
   return (
     <>
       {isEnd ? (
