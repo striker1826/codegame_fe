@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GameEndPage } from "../components/GameEndPage";
 import { GamePage } from "../components/GamePage";
-import { GradeResult } from "../components/GradeResult";
 
 const BASE_URL = "https://minseob-codegame.koyeb.app";
 // const BASE_URL = "http://localhost:8000";

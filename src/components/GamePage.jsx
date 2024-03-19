@@ -53,9 +53,9 @@ export const GamePage = ({
         {isGrading ? <Btn>채점중...</Btn> : SubmitComponent}
         <Btn onClick={handleLeaveRoom}>방 나가기</Btn>
       </BtnContainer>
+      {testCases[0] && <TestCaseList testCases={testCases} />}
       {codeError && <Result codeError={codeError} />}
       {GradeResult[0] && <GradeResultList gradeResult={GradeResult} />}
-      {testCases[0] && <TestCaseList testCases={testCases} />}
     </Container>
   );
 };
