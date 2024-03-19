@@ -71,7 +71,7 @@ export function CodingRoom() {
       setIsStart(true);
       setIsTimer(true);
       setIsReady(false);
-
+      setCodeError("");
       setTestCases(() => [...data.testCases]);
 
       setCodeInfo((prev) => {
@@ -110,9 +110,6 @@ export function CodingRoom() {
   const runCode = async (code) => {
     try {
       const output = await eval(code + `solution(${testCases[0].input})`);
-      console.log(testCases);
-      console.log(typeof output);
-      console.log(output);
       return output;
     } catch (err) {
       return err;
@@ -125,6 +122,7 @@ export function CodingRoom() {
       setCodeError(String(codeResult));
       return;
     }
+    setCodeError("");
 
     try {
       setIsGrading(true);
