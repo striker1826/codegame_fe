@@ -6,7 +6,7 @@ import axios from "axios";
 import { GameEndPage } from "../components/GameEndPage";
 import { GamePage } from "../components/GamePage";
 
-const BASE_URL = "https://minseob-codegame.koyeb.app";
+const BASE_URL = "http://43.203.127.59:8000";
 // const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
@@ -35,13 +35,37 @@ export function CodingRoom() {
   const params = new URLSearchParams(window.location.search);
   const navigate = useNavigate();
 
+  // // 새로고침 막기 변수
+  // const preventClose = (e) => {
+  //   alert("test");
+  //   navigate("/lobby");
+  //   e.preventDefault();
+  //   e.returnValue = ""; // chrome에서는 설정이 필요해서 넣은 코드
+  //   window.location.href = "/lobby";
+  // };
+
+  // // 브라우저에 렌더링 시 한 번만 실행하는 코드
+  // useEffect(() => {
+  //   (() => {
+  //     window.addEventListener("beforeunload", preventClose);
+  //   })();
+
+  //   return () => {
+  //     window.removeEventListener("beforeunload", preventClose);
+  //   };
+  // }, []);
+
   useEffect(() => {
     const roomname = params.get("roomname");
     const key = params.get("key");
     if (key === "create") {
       socket.emit("createRoom", { roomname });
       alert(
-        "방이 생성되었습니다. 상대방이 들어올때까지 기다리셔도 되고 솔로 플레이 모드를 즐기시려면 준비 버튼을 눌러주세요."
+        `방이 생성되었습니다.
+        상대방이 들어오면 알림이 옵니다.
+        1. 상대방이 들어올때까지 기다리시면 됩니다.
+        2. 솔로 플레이 모드를 즐기시려면 상대방이 들어오기 전에 준비 버튼을 눌러주세요. \n
+        새로 고침을 누를 시 기능들이 동작하지 않을 수 있습니다.`
       );
       return;
     }
@@ -60,7 +84,8 @@ export function CodingRoom() {
   };
 
   const onClickLeaveRoom = () => {
-    window.location.href = "/lobby";
+    navigate("/lobby");
+    window.location.reload();
   };
 
   // socket on functions ===================================
