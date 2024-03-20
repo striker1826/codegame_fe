@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 
-const BASE_URL = "http://43.203.127.59:8000";
+const BASE_URL = "https://battlecode.shop";
 const LOCAL_URL = "http://localhost:8000";
 
 export const Redirect = () => {

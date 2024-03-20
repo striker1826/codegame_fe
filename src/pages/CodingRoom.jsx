@@ -6,7 +6,7 @@ import axios from "axios";
 import { GameEndPage } from "../components/GameEndPage";
 import { GamePage } from "../components/GamePage";
 
-const BASE_URL = "http://43.203.127.59:8000";
+const BASE_URL = "https://battlecode.shop";
 // const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
