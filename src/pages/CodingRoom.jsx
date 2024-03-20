@@ -96,6 +96,7 @@ export function CodingRoom() {
       setIsTimer(true);
       setIsReady(false);
       setCodeError("");
+      setGradingResult(() => []);
       setTestCases(() => [...data.testCases]);
 
       setCodeInfo((prev) => {
