@@ -16,6 +16,28 @@ const Container = styled.div`
   position: relative;
 `;
 
+const CreateRoom = styled.div`
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+
+  input {
+    width: 200px;
+  }
+
+  button {
+    width: 200px;
+    height: 20px;
+    border: none;
+    background: #2666cf;
+    color: #fff;
+    cursor: pointer;
+  }
+`;
+
 export const Lobby = () => {
   const [roomList, setRoomList] = useState([]);
   const [roomname, setRoomname] = useState("");
@@ -109,12 +131,12 @@ export const Lobby = () => {
     <Container>
       {isLoading && <Loading />}
       <RoomList roomList={roomList} joinRoom={joinRoom} />
-      <div style={{ marginTop: "60px" }}>
+      <CreateRoom>
         <input type="text" maxLength={8} onChange={onChangeRoomname} />
         <button onClick={createRoom} disabled={isLoading}>
           방 생성
         </button>
-      </div>
+      </CreateRoom>
     </Container>
   );
 };
