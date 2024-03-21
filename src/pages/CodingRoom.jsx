@@ -200,6 +200,7 @@ export function CodingRoom() {
         />
       ) : (
         <GamePage
+          isReady={isReady}
           isTimer={isTimer}
           codeInfo={codeInfo}
           setIsEnd={setIsEnd}

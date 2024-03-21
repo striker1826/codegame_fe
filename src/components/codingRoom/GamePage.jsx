@@ -14,6 +14,15 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+`;
+
+const BtnContainer = styled.div`
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 50px;
 `;
 
 const Btn = styled.button`
@@ -26,12 +35,19 @@ const Btn = styled.button`
   cursor: pointer;
 `;
 
-const BtnContainer = styled.div`
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: center;
-  gap: 50px;
+const Waiting = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  p {
+    text-align: center;
+    width: 480px;
+    height: 50px;
+    font-size: 25px;
+    font-weight: bold;
+    transform: translate(-50%, -50%);
+  }
 `;
 
 export const GamePage = ({
@@ -45,6 +61,7 @@ export const GamePage = ({
   handleLeaveRoom,
   codeError,
   testCases,
+  isReady,
 }) => {
   return (
     <Container>
@@ -54,6 +71,11 @@ export const GamePage = ({
         {isGrading ? <Btn>채점중...</Btn> : SubmitComponent}
         <Btn onClick={handleLeaveRoom}>방 나가기</Btn>
       </BtnContainer>
+      {isReady && (
+        <Waiting>
+          <p>다른 사람이 준비를 완료할때까지 기다려 주세요.</p>
+        </Waiting>
+      )}
       {testCases[0] && <TestCaseList testCases={testCases} />}
       {codeError && <Result codeError={codeError} />}
       {GradeResult[0] && <GradeResultList gradeResult={GradeResult} />}
