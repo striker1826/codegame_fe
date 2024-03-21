@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { GameEndPage } from "../components/GameEndPage";
-import { GamePage } from "../components/GamePage";
+import { GameEndPage } from "../components/codingRoom/GameEndPage";
+import { GamePage } from "../components/codingRoom/GamePage";
 
 const BASE_URL = "https://battlecode.shop";
 // const BASE_URL = "http://localhost:8000";

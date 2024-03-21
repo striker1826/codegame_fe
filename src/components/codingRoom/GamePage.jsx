@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import { Timer } from "./Timer";
+import { Timer } from "../Timer";
 import { GradeResultList } from "./GradeResult";
 import { TestCaseList } from "./TestCase";
 import { Result } from "./Result";

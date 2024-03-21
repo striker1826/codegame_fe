@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 
+import { RoomList } from "../components/Lobby/RoomList";
+
 const BASE_URL = "https://battlecode.shop";
 // const BASE_URL = "http://localhost:8000";
 
@@ -11,18 +13,6 @@ const socket = io.connect(BASE_URL);
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const RoomContainer = styled.div`
-  display: flex;
-`;
-
-const StyledRoom = styled.button`
-  width: 100px;
-  height: 100px;
-  border: none;
-  background-color: #b4c3ff;
-  corlor: #fff;
 `;
 
 export const Lobby = () => {
@@ -111,16 +101,7 @@ export const Lobby = () => {
 
   return (
     <Container>
-      <RoomContainer>
-        {roomList.map((room) => {
-          return (
-            <StyledRoom key={room.roomId} onClick={() => joinRoom(room.roomname)}>
-              <p>{room.roomname}</p>
-              <p>{room.count}/2</p>
-            </StyledRoom>
-          );
-        })}
-      </RoomContainer>
+      <RoomList roomList={roomList} joinRoom={joinRoom} />
       <div style={{ marginTop: "60px" }}>
         <input type="text" maxLength={8} onChange={onChangeRoomname} />
         <button onClick={createRoom}>방 생성</button>
