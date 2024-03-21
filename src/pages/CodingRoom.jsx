@@ -99,14 +99,11 @@ export function CodingRoom() {
       setGradingResult(() => []);
       setTestCases(() => [...data.testCases]);
 
-      setCodeInfo((prev) => {
-        return {
-          ...prev,
-          code: data.question.format,
-          questionId: data.question.questionId,
-          question: data.question.question,
-          limit: Number(data.question.time) * 60,
-        };
+      setCodeInfo({
+        code: data.question.format,
+        questionId: data.question.questionId,
+        question: data.question.question,
+        limit: Number(data.question.time) * 60,
       });
     });
   }, [socket]);
@@ -151,7 +148,9 @@ export function CodingRoom() {
 
     try {
       setIsGrading(true);
-      const response = await axios.post(`${BASE_URL}/api/grading/run/${codeInfo.questionId}`, { code: codeInfo.code });
+      const response = await axios.post(`${BASE_URL}/api/grading/run/${codeInfo.questionId}`, {
+        code: codeInfo.code,
+      });
       const testResult = response.data;
 
       if (testResult.some((result) => result.result === "실패")) {

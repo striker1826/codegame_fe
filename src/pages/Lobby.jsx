@@ -31,6 +31,10 @@ export const Lobby = () => {
 
   const createRoom = async () => {
     try {
+      if (roomname === "") {
+        alert("방 이름을 입력해주세요.");
+        return;
+      }
       const res = await axios.post(`${BASE_URL}/api/room`, { roomname });
       const roomData = res.data;
       window.location.href = `/codingroom?roomname=${roomData.roomname}&key=${"create"}`;
@@ -50,6 +54,12 @@ export const Lobby = () => {
       const status = err.response.status;
       if (status === 400) {
         alert("방이 꽉 찼습니다.");
+        return;
+      }
+
+      if (status === 401) {
+        alert("이미 시작한 방입니다.");
+        return;
       }
     }
   };

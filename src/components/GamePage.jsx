@@ -6,8 +6,8 @@ import { Result } from "./Result";
 import { QnA } from "./QnA";
 
 const Container = styled.div`
-  background-color: #b4c3ff;
-  padding: 30px 50px;
+  background: rgba(38, 102, 207, 0.1);
+  padding: 50px;
   width: 100%;
   height: 100%;
   padding: 20px;
@@ -28,6 +28,7 @@ const Btn = styled.button`
 
 const BtnContainer = styled.div`
   margin-top: 30px;
+  margin-bottom: 30px;
   display: flex;
   justify-content: center;
   gap: 50px;
