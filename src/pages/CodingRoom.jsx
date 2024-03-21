@@ -196,6 +196,8 @@ export function CodingRoom() {
     setIsTimer(false);
     setIsEnd(false);
     setIsLeaveRoom(false);
+    setTestCases(new Array());
+    setGradingResult(new Array());
   };
 
   const handleLeaveRoom = () => {
