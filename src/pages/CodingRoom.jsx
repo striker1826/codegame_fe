@@ -6,8 +6,8 @@ import axios from "axios";
 import { GameEndPage } from "../components/codingRoom/GameEndPage";
 import { GamePage } from "../components/codingRoom/GamePage";
 
-const BASE_URL = "https://battlecode.shop";
-// const BASE_URL = "http://localhost:8000";
+// const BASE_URL = "https://battlecode.shop";
+const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
 
@@ -34,26 +34,6 @@ export function CodingRoom() {
   const [gradingResult, setGradingResult] = useState([]);
   const params = new URLSearchParams(window.location.search);
   const navigate = useNavigate();
-
-  // // 새로고침 막기 변수
-  // const preventClose = (e) => {
-  //   alert("test");
-  //   navigate("/lobby");
-  //   e.preventDefault();
-  //   e.returnValue = ""; // chrome에서는 설정이 필요해서 넣은 코드
-  //   window.location.href = "/lobby";
-  // };
-
-  // // 브라우저에 렌더링 시 한 번만 실행하는 코드
-  // useEffect(() => {
-  //   (() => {
-  //     window.addEventListener("beforeunload", preventClose);
-  //   })();
-
-  //   return () => {
-  //     window.removeEventListener("beforeunload", preventClose);
-  //   };
-  // }, []);
 
   useEffect(() => {
     const roomname = params.get("roomname");
