@@ -5,8 +5,8 @@ import axios from "axios";
 import { RoomList } from "../components/Lobby/RoomList";
 import { Loading } from "../components/Loading";
 
-// const BASE_URL = "https://battlecode.shop";
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://battlecode.shop";
+// const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
 
