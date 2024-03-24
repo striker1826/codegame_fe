@@ -14,6 +14,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  align-items: center;
 `;
 
 const CreateRoom = styled.div`
@@ -36,6 +37,31 @@ const StyledBtn = styled.button`
   background: ${(props) => (props.btnColor === false ? "#2666cf" : "gray")};
   color: #fff;
   cursor: pointer;
+`;
+
+const Survey = styled.div`
+  background: rgba(38, 102, 207, 0.1);
+  border-radius: 10px;
+  border: 1px solid #2666cf;
+  width: 700px;
+  height: 100px;
+  margin-top: 70px;
+  padding: 20px;
+
+  p {
+    text-align: center;
+    color: #093a8b;
+    font-size: 18px;
+    font-wieght: 500;
+  }
+
+  a {
+    margin-top: 20px;
+    display: block;
+    text-align: center;
+    font-size: 24px;
+    font-wieght: 500;
+  }
 `;
 
 export const Lobby = () => {
@@ -137,6 +163,15 @@ export const Lobby = () => {
           방 생성
         </StyledBtn>
       </CreateRoom>
+      <Survey>
+        <p>설문조사에 참여해 주신 분들께 추첨을 통해서 5분께 소정의 기프티콘을 보내드립니다.</p>
+        <a
+          style={{ textDecoration: "none" }}
+          href="https://docs.google.com/forms/d/1XgQ57txpIqVzi70QXNTxoT43mWzJRFZ-wy7NBCZWa9c/edit"
+        >
+          설문조사 링크 클릭
+        </a>
+      </Survey>
     </Container>
   );
 };
