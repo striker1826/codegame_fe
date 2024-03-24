@@ -2,16 +2,23 @@ import { styled } from "styled-components";
 
 const RoomContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   padding: 50px;
   gap: 20px;
 `;
 
 const StyledRoom = styled.button`
-  width: 120px;
-  height: 120px;
+  width: 200px;
+  height: 200px;
   border: none;
   background-color: #b4c3ff;
   color: #fff;
+
+  @media (max-width: 768px) {
+    width: 70px;
+    height: 70px;
+    font-size: 10px;
+  }
 `;
 
 export const RoomList = ({ roomList, joinRoom }) => {

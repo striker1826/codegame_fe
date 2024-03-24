@@ -38,22 +38,25 @@ export function CodingRoom() {
   useEffect(() => {
     const roomname = params.get("roomname");
     const key = params.get("key");
+    const access_token = localStorage.getItem("access_token");
+
     if (key === "create") {
-      socket.emit("createRoom", { roomname });
+      socket.emit("createRoom", { roomname, access_token });
       alert(
         `방이 생성되었습니다.
         상대방이 들어오면 알림이 옵니다.
         1. 상대방이 들어올때까지 기다리시면 됩니다.
-        2. 솔로 플레이 모드를 즐기시려면 상대방이 들어오기 전에 준비 버튼을 눌러주세요. \n
+        2. 솔로 플레이 모드를 즐기시려면 상대방이 들어오기 전에 준비 버튼을 눌러주세요. \n\n
         새로 고침을 누를 시 기능들이 동작하지 않을 수 있습니다.`
       );
       return;
-    }
-
-    if (key === "join") {
-      try {
-        socket.emit("joinRoom", { roomname });
-      } catch (err) {}
+    } else if (key === "join") {
+      socket.emit("joinRoom", { roomname, access_token });
+      return;
+    } else {
+      alert("정상적인 방법으로 방에 입장해주세요.");
+      navigate(-1);
+      window.location.reload();
     }
   }, []);
 
@@ -105,6 +108,22 @@ export function CodingRoom() {
     socket.on("leaveRoom", (data) => {
       setIsLeaveRoom(true);
       alert(data);
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on("isEnterRoom", (data) => {
+      alert("하나의 방에만 입장할 수 있습니다.");
+      navigate(-1);
+      window.location.reload();
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on("isNotExistRoom", (data) => {
+      alert("존재하지 않는 방입니다.");
+      navigate(-1);
+      window.location.reload();
     });
   }, [socket]);
   // =======================================================

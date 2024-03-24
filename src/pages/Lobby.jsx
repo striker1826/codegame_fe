@@ -47,6 +47,7 @@ const Survey = styled.div`
   height: 100%;
   margin-top: 70px;
   padding: 20px;
+  margin-bottom: 20px;
 
   p {
     text-align: center;
@@ -82,14 +83,31 @@ export const Lobby = () => {
         return;
       }
       setIsLoading(true);
-      const res = await axios.post(`${BASE_URL}/api/room`, { roomname });
+      const access_token = window.localStorage.getItem("access_token");
+      const res = await axios.post(
+        `${BASE_URL}/api/room`,
+        { roomname },
+        { headers: { Authorization: `Bearer ${access_token}` } }
+      );
+
       const roomData = res.data;
-      console.log(roomData);
       window.location.href = `/codingroom?roomname=${roomData.roomname}&key=${"create"}`;
     } catch (err) {
       const status = err.response.status;
+      const code = err.response.data.message;
+
+      if (status === 400 && code === "이미 방에 입장한 유저입니다.") {
+        alert("이미 방에 입장한 유저입니다.");
+        return;
+      }
       if (status === 400) {
         alert("이미 존재하는 방 이름입니다. 다른 이름을 입력해주세요.");
+      }
+
+      if (status === 401) {
+        window.localStorage.removeItem("access_token");
+        window.location.reload();
+        alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
       }
     } finally {
       setIsLoading(false);
@@ -98,10 +116,18 @@ export const Lobby = () => {
 
   const joinRoom = async (roomname) => {
     try {
-      await axios.patch(`${BASE_URL}/api/room`, { roomname });
+      const access_token = window.localStorage.getItem("access_token");
+      await axios.patch(`${BASE_URL}/api/room`, { roomname }, { headers: { Authorization: `Bearer ${access_token}` } });
       window.location.href = `/codingroom?roomname=${roomname}&key=${"join"}`;
     } catch (err) {
       const status = err.response.status;
+      const code = err.response.data.message;
+
+      if (status === 400 && code === "이미 방에 입장한 유저입니다.") {
+        alert("이미 방에 입장한 유저입니다.");
+        return;
+      }
+
       if (status === 400) {
         alert("방이 꽉 찼습니다.");
         return;
@@ -148,10 +174,16 @@ export const Lobby = () => {
         setRoomList((prev) => {
           return [...prev, ...data];
         });
-      } catch (err) {}
+      } catch (err) {
+        const status = err.response.status;
+        if (status === 401) {
+          window.localStorage.removeItem("access_token");
+          alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+        }
+      }
     };
 
-    socket.emit("enterLobby", () => {});
+    socket.emit("enterLobby", { access_token: window.localStorage.getItem("access_token") });
     getRoomList();
   }, []);
 
@@ -164,7 +196,7 @@ export const Lobby = () => {
       {isLoading && <Loading />}
       <RoomList roomList={roomList} joinRoom={joinRoom} />
       <CreateRoom>
-        <input type="text" maxLength={8} onChange={onChangeRoomname} />
+        <input type="text" maxLength={10} onChange={onChangeRoomname} />
         <StyledBtn btnColor={isLoading} onClick={createRoom} disabled={isLoading}>
           방 생성
         </StyledBtn>
