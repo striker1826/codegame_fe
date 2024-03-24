@@ -57,6 +57,7 @@ const Survey = styled.div`
 
   a {
     margin-top: 20px;
+    text-decoration: none;
     display: block;
     text-align: center;
     font-size: 24px;
@@ -165,11 +166,8 @@ export const Lobby = () => {
       </CreateRoom>
       <Survey>
         <p>설문조사에 참여해 주신 분들께 추첨을 통해서 5분께 소정의 기프티콘을 보내드립니다.</p>
-        <a
-          style={{ textDecoration: "none" }}
-          href="https://docs.google.com/forms/d/1XgQ57txpIqVzi70QXNTxoT43mWzJRFZ-wy7NBCZWa9c/edit"
-        >
-          설문조사 링크 클릭
+        <a target="_blank" href="https://docs.google.com/forms/d/1XgQ57txpIqVzi70QXNTxoT43mWzJRFZ-wy7NBCZWa9c/edit">
+          설문조사 참여하기
         </a>
       </Survey>
     </Container>
