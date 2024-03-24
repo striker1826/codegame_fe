@@ -126,6 +126,14 @@ export function CodingRoom() {
       window.location.reload();
     });
   }, [socket]);
+
+  useEffect(() => {
+    socket.on("invalidRoot", (data) => {
+      alert("정상적인 방법으로 방에 입장해주세요.");
+      navigate(-1);
+      window.location.reload();
+    });
+  }, [socket]);
   // =======================================================
 
   const runCode = async (code) => {
