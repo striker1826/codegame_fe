@@ -43,8 +43,8 @@ const Survey = styled.div`
   background: rgba(38, 102, 207, 0.1);
   border-radius: 10px;
   border: 1px solid #2666cf;
-  width: 700px;
-  height: 100px;
+  width: 500px;
+  height: 100%;
   margin-top: 70px;
   padding: 20px;
 
@@ -62,6 +62,11 @@ const Survey = styled.div`
     text-align: center;
     font-size: 24px;
     font-wieght: 500;
+  }
+
+  @media (max-width: 768px) {
+    width: 90%;
+    height: 100%;
   }
 `;
 
@@ -165,7 +170,10 @@ export const Lobby = () => {
         </StyledBtn>
       </CreateRoom>
       <Survey>
-        <p>설문조사에 참여해 주신 분들께 추첨을 통해서 5분께 소정의 기프티콘을 보내드립니다.</p>
+        <p>
+          설문 참여자 분들 중 5명을 추첨하여
+          <br /> 기프트콘을 보내드립니다.
+        </p>
         <a target="_blank" href="https://docs.google.com/forms/d/1XgQ57txpIqVzi70QXNTxoT43mWzJRFZ-wy7NBCZWa9c/edit">
           설문조사 참여하기
         </a>
