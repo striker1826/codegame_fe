@@ -27,15 +27,15 @@ const CreateRoom = styled.div`
   input {
     width: 200px;
   }
+`;
 
-  button {
-    width: 200px;
-    height: 20px;
-    border: none;
-    background: #2666cf;
-    color: #fff;
-    cursor: pointer;
-  }
+const StyledBtn = styled.button`
+  width: 200px;
+  height: 20px;
+  border: none;
+  background: ${(props) => (props.btnColor === false ? "#2666cf" : "gray")};
+  color: #fff;
+  cursor: pointer;
 `;
 
 export const Lobby = () => {
@@ -133,9 +133,9 @@ export const Lobby = () => {
       <RoomList roomList={roomList} joinRoom={joinRoom} />
       <CreateRoom>
         <input type="text" maxLength={8} onChange={onChangeRoomname} />
-        <button onClick={createRoom} disabled={isLoading}>
+        <StyledBtn btnColor={isLoading} onClick={createRoom} disabled={isLoading}>
           방 생성
-        </button>
+        </StyledBtn>
       </CreateRoom>
     </Container>
   );
