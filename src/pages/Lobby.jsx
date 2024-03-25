@@ -4,6 +4,8 @@ import { io } from "socket.io-client";
 import axios from "axios";
 import { RoomList } from "../components/Lobby/RoomList";
 import { Loading } from "../components/Loading";
+import { patchApi, postApi } from "../api";
+import { errorConfig } from "../errorConfig";
 
 const BASE_URL = "https://battlecode.shop";
 // const BASE_URL = "http://localhost:8000";
@@ -77,41 +79,24 @@ export const Lobby = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const createRoom = async () => {
+    if (roomname === "") {
+      alert("방 이름을 입력해주세요.");
+      return;
+    }
+    const access_token = window.localStorage.getItem("access_token");
     try {
-      if (roomname === "") {
-        alert("방 이름을 입력해주세요.");
-        return;
-      }
       setIsLoading(true);
-      const access_token = window.localStorage.getItem("access_token");
-      const res = await axios.post(
-        `${BASE_URL}/api/room`,
-        { roomname },
-        { headers: { Authorization: `Bearer ${access_token}` } }
-      );
-
-      const roomData = res.data;
-      window.location.href = `/codingroom?roomname=${roomData.roomname}&key=${"create"}`;
+      let result = await postApi("/api/room", { roomname }, access_token);
+      window.location.href = `/codingroom?roomname=${result.roomname}&key=${"create"}`;
     } catch (err) {
       const status = err.response.status;
       const code = err.response.data.message;
-
-      if (status === 400 && code === "이미 방에 입장한 유저입니다.") {
-        alert("이미 방에 입장한 유저입니다.");
-        return;
-      }
-      if (status === 400) {
-        alert("이미 존재하는 방 이름입니다. 다른 이름을 입력해주세요.");
-      }
-
-      if (status === 401) {
+      if (status === 401 && code === null) {
         window.localStorage.removeItem("access_token");
-        window.location.reload();
         alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
-      }
-
-      if (status === 429) {
-        alert("너무 많은 요청을 한꺼번에 보냈습니다. 잠시 후 다시 시도해주세요.");
+      } else {
+        console.log(status, code);
+        alert(errorConfig[status][code]);
       }
     } finally {
       setIsLoading(false);
@@ -119,39 +104,28 @@ export const Lobby = () => {
   };
 
   const joinRoom = async (roomname) => {
+    const access_token = window.localStorage.getItem("access_token");
     try {
-      const access_token = window.localStorage.getItem("access_token");
-      await axios.patch(`${BASE_URL}/api/room`, { roomname }, { headers: { Authorization: `Bearer ${access_token}` } });
+      await patchApi("/api/room", { roomname }, access_token);
       window.location.href = `/codingroom?roomname=${roomname}&key=${"join"}`;
     } catch (err) {
       const status = err.response.status;
       const code = err.response.data.message;
-
-      if (status === 400 && code === "이미 방에 입장한 유저입니다.") {
-        alert("이미 방에 입장한 유저입니다.");
-        return;
+      if (status === 401 && code === null) {
+        window.localStorage.removeItem("access_token");
+        alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+      } else {
+        alert(errorConfig[status][code]);
       }
-
-      if (status === 400) {
-        alert("방이 꽉 찼습니다.");
-        return;
-      }
-
-      if (status === 401) {
-        alert("이미 시작한 방입니다.");
-        return;
-      }
-
-      if (status === 429) {
-        alert("너무 많은 요청을 한꺼번에 보냈습니다. 잠시 후 다시 시도해주세요.");
-      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // socket useEffect
-  useEffect(() => {
-    socket.on("joinRoom", (data) => {});
-  }, [socket]);
+  // useEffect(() => {
+  //   socket.on("joinRoom", (data) => {});
+  // }, [socket]);
 
   useEffect(() => {
     socket.on("playerLose", (data) => {
@@ -170,9 +144,12 @@ export const Lobby = () => {
           });
         } catch (err) {
           const status = err.response.status;
-
-          if (status === 429) {
-            alert("너무 많은 요청을 한꺼번에 보냈습니다. 잠시 후 다시 시도해주세요.");
+          const code = err.response.data.message;
+          if (status === 401 && code === null) {
+            window.localStorage.removeItem("access_token");
+            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+          } else {
+            alert(errorConfig[status][code]);
           }
         }
       };
@@ -192,14 +169,12 @@ export const Lobby = () => {
         });
       } catch (err) {
         const status = err.response.status;
-
-        if (status === 401) {
+        const code = err.response.data.message;
+        if (status === 401 && code === null) {
           window.localStorage.removeItem("access_token");
           alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
-        }
-
-        if (status === 429) {
-          alert("너무 많은 요청을 한꺼번에 보냈습니다. 잠시 후 다시 시도해주세요.");
+        } else {
+          alert(errorConfig[status][code]);
         }
       }
     };
@@ -214,7 +189,7 @@ export const Lobby = () => {
 
   return (
     <Container>
-      {isLoading && <Loading />}
+      {isLoading && <Loading text={"방에 입장 중 입니다. 잠시만 기다려 주세요"} />}
       <RoomList roomList={roomList} joinRoom={joinRoom} />
       <CreateRoom>
         <input type="text" maxLength={10} onChange={onChangeRoomname} />

@@ -2,28 +2,38 @@ import { styled } from "styled-components";
 import { Oval } from "react-loader-spinner";
 
 const StyledLoading = styled.div`
+  z-index: 1;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, 150%);
+  transform: translate(-50%, -20%);
 
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  p {
-    margin-top: 50px;
-    font-size: 20px;
-  }
 `;
 
-export const Loading = () => {
+const StyledDiv = styled.div`
+  margin-top: 20px;
+  padding: 20px;
+  background: pink;
+`;
+
+const StyledText = styled.span`
+  margin-top: 50px;
+  font-size: 20px;
+  color: #093a8b;
+`;
+
+export const Loading = ({ text }) => {
   const LoadingProgress = <Oval secondaryColor="#D9D9D9" color="#FF922D" height={94} width={94} strokeWidth={7} />;
 
   return (
     <StyledLoading>
       {LoadingProgress}
-      <p>방을 생성중입니다. 잠시만 기다려 주세요</p>
+      <StyledDiv>
+        <StyledText>{text}</StyledText>
+      </StyledDiv>
     </StyledLoading>
   );
 };

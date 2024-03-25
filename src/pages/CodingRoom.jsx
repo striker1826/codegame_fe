@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GameEndPage } from "../components/codingRoom/GameEndPage";
 import { GamePage } from "../components/codingRoom/GamePage";
+import { errorConfig } from "../errorConfig";
 
 const BASE_URL = "https://battlecode.shop";
 // const BASE_URL = "http://localhost:8000";
@@ -174,8 +175,12 @@ export function CodingRoom() {
       }
     } catch (err) {
       const status = err.response.status;
-      if (status === 429) {
-        alert("너무 많은 요청을 한꺼번에 보냈습니다. 잠시 후 다시 시도해주세요.");
+      const code = err.response.data.message;
+      if (status === 401 && code === null) {
+        window.localStorage.removeItem("access_token");
+        alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+      } else {
+        alert(errorConfig[status][code]);
       }
     } finally {
       setIsGrading(false);
