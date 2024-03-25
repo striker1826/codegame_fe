@@ -173,7 +173,10 @@ export function CodingRoom() {
         return;
       }
     } catch (err) {
-      // TODO: status code handling....
+      const status = err.response.status;
+      if (status === 429) {
+        alert("너무 많은 요청을 한꺼번에 보냈습니다. 잠시 후 다시 시도해주세요.");
+      }
     } finally {
       setIsGrading(false);
     }

@@ -109,6 +109,10 @@ export const Lobby = () => {
         window.location.reload();
         alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
       }
+
+      if (status === 429) {
+        alert("너무 많은 요청을 한꺼번에 보냈습니다. 잠시 후 다시 시도해주세요.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -137,6 +141,10 @@ export const Lobby = () => {
         alert("이미 시작한 방입니다.");
         return;
       }
+
+      if (status === 429) {
+        alert("너무 많은 요청을 한꺼번에 보냈습니다. 잠시 후 다시 시도해주세요.");
+      }
     }
   };
 
@@ -154,11 +162,19 @@ export const Lobby = () => {
   useEffect(() => {
     socket.on("createdRoom", (data) => {
       const getRoomList = async () => {
-        const res = await axios.get(`${BASE_URL}/api/room/list`);
-        const data = res.data;
-        setRoomList((prev) => {
-          return [...data];
-        });
+        try {
+          const res = await axios.get(`${BASE_URL}/api/room/list`);
+          const data = res.data;
+          setRoomList((prev) => {
+            return [...data];
+          });
+        } catch (err) {
+          const status = err.response.status;
+
+          if (status === 429) {
+            alert("너무 많은 요청을 한꺼번에 보냈습니다. 잠시 후 다시 시도해주세요.");
+          }
+        }
       };
 
       getRoomList();
@@ -176,9 +192,14 @@ export const Lobby = () => {
         });
       } catch (err) {
         const status = err.response.status;
+
         if (status === 401) {
           window.localStorage.removeItem("access_token");
           alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+        }
+
+        if (status === 429) {
+          alert("너무 많은 요청을 한꺼번에 보냈습니다. 잠시 후 다시 시도해주세요.");
         }
       }
     };
