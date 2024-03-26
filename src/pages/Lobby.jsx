@@ -45,6 +45,7 @@ export const Lobby = () => {
         window.localStorage.removeItem("access_token");
         alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
         navigate("/");
+        window.location.reload();
       } else {
         alert(errorConfig[status][code]);
       }

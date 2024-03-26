@@ -58,6 +58,7 @@ export function CodingRoom() {
     } else {
       alert("정상적인 방법으로 방에 입장해주세요.");
       navigate("/lobby");
+      window.location.reload();
     }
   }, []);
 
@@ -68,6 +69,7 @@ export function CodingRoom() {
 
   const onClickLeaveRoom = () => {
     navigate("/lobby");
+    window.location.reload();
   };
 
   // socket on functions ===================================
@@ -114,6 +116,7 @@ export function CodingRoom() {
     socket.on("isEnterRoom", (data) => {
       alert("하나의 방에만 입장할 수 있습니다.");
       navigate("/lobby");
+      window.location.reload();
     });
   }, [socket]);
 
@@ -212,6 +215,7 @@ export function CodingRoom() {
 
   const handleLeaveRoom = () => {
     navigate("/lobby");
+    window.location.reload();
   };
 
   const ReReadyComponent = isReady ? <Btn>준비완료</Btn> : <Btn onClick={handleToStart}>다시하기</Btn>;
