@@ -10,8 +10,8 @@ import { Survey } from "../components/Lobby/Survey";
 import { CreateRoom } from "../components/Lobby/CreateRoom";
 import { useNavigate } from "react-router-dom";
 
-// const BASE_URL = "https://battlecode.shop";
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://battlecode.shop";
+// const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
 
