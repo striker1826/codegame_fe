@@ -58,7 +58,7 @@ export const Lobby = () => {
   const joinRoom = async (roomname) => {
     const access_token = window.localStorage.getItem("access_token");
     try {
-      await patchApi("/api/room", { roomname, key: "created" }, access_token);
+      await patchApi("/api/room", { roomname, key: "joined" }, access_token);
       window.location.href = `/codingroom?roomname=${roomname}&key=${"join"}`;
     } catch (err) {
       const status = err.response.status;
