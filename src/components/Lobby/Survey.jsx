@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
 const Container = styled.div`
@@ -17,19 +18,19 @@ const Container = styled.div`
     font-wieght: 500;
   }
 
-  a {
-    margin-top: 20px;
-    text-decoration: none;
-    display: block;
-    text-align: center;
-    font-size: 24px;
-    font-wieght: 500;
-  }
-
   @media (max-width: 768px) {
     width: 90%;
     height: 100%;
   }
+`;
+
+const SurveyLink = styled.span`
+  margin-top: 20px;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  font-size: 24px;
+  font-wieght: 500;
 `;
 
 export const Survey = () => {
@@ -39,9 +40,9 @@ export const Survey = () => {
         설문 참여자 분들 중 5명을 추첨하여
         <br /> 기프트콘을 보내드립니다.
       </p>
-      <a target="_blank" href="https://docs.google.com/forms/d/1XgQ57txpIqVzi70QXNTxoT43mWzJRFZ-wy7NBCZWa9c/edit">
-        설문조사 참여하기
-      </a>
+      <Link target="_blank" to="https://docs.google.com/forms/d/1XgQ57txpIqVzi70QXNTxoT43mWzJRFZ-wy7NBCZWa9c/edit">
+        <SurveyLink>설문조사 참여하기</SurveyLink>
+      </Link>
     </Container>
   );
 };

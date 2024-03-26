@@ -17,7 +17,7 @@ const StyledBtn = styled.button`
   width: 200px;
   height: 20px;
   border: none;
-  background: ${(props) => (props.btnColor === false ? "#2666cf" : "gray")};
+  background: ${({ $color }) => (!$color ? "#2666cf" : "gray")};
   color: #fff;
   cursor: pointer;
 `;
@@ -26,7 +26,7 @@ export const CreateRoom = ({ onChangeRoomname, isLoading, createRoom }) => {
   return (
     <Container>
       <input type="text" maxLength={10} onChange={onChangeRoomname} />
-      <StyledBtn btnColor={isLoading} onClick={createRoom} disabled={isLoading}>
+      <StyledBtn $color={isLoading} onClick={createRoom} disabled={isLoading}>
         방 생성
       </StyledBtn>
     </Container>

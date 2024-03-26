@@ -6,6 +6,7 @@ import axios from "axios";
 import { GameEndPage } from "../components/codingRoom/GameEndPage";
 import { GamePage } from "../components/codingRoom/GamePage";
 import { errorConfig } from "../errorConfig";
+import { useParams } from "react-router-dom";
 
 const BASE_URL = "https://battlecode.shop";
 // const BASE_URL = "http://localhost:8000";
@@ -56,20 +57,17 @@ export function CodingRoom() {
       return;
     } else {
       alert("정상적인 방법으로 방에 입장해주세요.");
-      navigate(-1);
-      window.location.reload();
+      navigate("/lobby");
     }
   }, []);
 
   const handleToStart = async () => {
     socket.emit("ready");
     setIsReady(true);
-    // alert("상대방의 준비가 완료될 때 까지 기다려주세요.");
   };
 
   const onClickLeaveRoom = () => {
     navigate("/lobby");
-    window.location.reload();
   };
 
   // socket on functions ===================================
@@ -115,24 +113,21 @@ export function CodingRoom() {
   useEffect(() => {
     socket.on("isEnterRoom", (data) => {
       alert("하나의 방에만 입장할 수 있습니다.");
-      navigate(-1);
-      window.location.reload();
+      navigate("/lobby");
     });
   }, [socket]);
 
   useEffect(() => {
     socket.on("isNotExistRoom", (data) => {
       alert("존재하지 않는 방입니다.");
-      navigate(-1);
-      window.location.reload();
+      navigate("/lobby");
     });
   }, [socket]);
 
   useEffect(() => {
     socket.on("invalidRoot", (data) => {
       alert("정상적인 방법으로 방에 입장해주세요.");
-      navigate(-1);
-      window.location.reload();
+      navigate("/lobby");
     });
   }, [socket]);
   // =======================================================
@@ -217,7 +212,6 @@ export function CodingRoom() {
 
   const handleLeaveRoom = () => {
     navigate("/lobby");
-    window.location.reload();
   };
 
   const ReReadyComponent = isReady ? <Btn>준비완료</Btn> : <Btn onClick={handleToStart}>다시하기</Btn>;
