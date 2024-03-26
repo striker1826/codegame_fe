@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "https://battlecode.shop";
-// const BASE_URL = "http://localhost:8000";
+// const BASE_URL = "https://battlecode.shop";
+const BASE_URL = "http://localhost:8000";
 
 export const postApi = async (path, data, token) => {
   const response = await axios.post(`${BASE_URL}${path}`, data, { headers: { Authorization: `Bearer ${token}` } });

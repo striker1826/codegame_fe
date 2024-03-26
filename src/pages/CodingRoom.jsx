@@ -8,8 +8,8 @@ import { GamePage } from "../components/codingRoom/GamePage";
 import { errorConfig } from "../errorConfig";
 import { useParams } from "react-router-dom";
 
-const BASE_URL = "https://battlecode.shop";
-// const BASE_URL = "http://localhost:8000";
+// const BASE_URL = "https://battlecode.shop";
+const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
 

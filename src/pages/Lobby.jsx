@@ -10,7 +10,8 @@ import { Survey } from "../components/Lobby/Survey";
 import { CreateRoom } from "../components/Lobby/CreateRoom";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "https://battlecode.shop";
+// const BASE_URL = "https://battlecode.shop";
+const BASE_URL = "http://localhost:8000";
 
 const socket = io.connect(BASE_URL);
 
@@ -35,7 +36,7 @@ export const Lobby = () => {
     const access_token = window.localStorage.getItem("access_token");
     try {
       setIsLoading(true);
-      let result = await postApi("/api/room", { roomname }, access_token);
+      let result = await postApi("/api/room", { roomname, key: "created" }, access_token);
       window.location.href = `/codingroom?roomname=${result.roomname}&key=${"create"}`;
     } catch (err) {
       const status = err.response.status;
@@ -57,11 +58,12 @@ export const Lobby = () => {
   const joinRoom = async (roomname) => {
     const access_token = window.localStorage.getItem("access_token");
     try {
-      await patchApi("/api/room", { roomname }, access_token);
+      await patchApi("/api/room", { roomname, key: "created" }, access_token);
       window.location.href = `/codingroom?roomname=${roomname}&key=${"join"}`;
     } catch (err) {
       const status = err.response.status;
       const code = err.response.data.message;
+
       if (status === 401 && code === null) {
         window.localStorage.removeItem("access_token");
         alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
@@ -91,7 +93,7 @@ export const Lobby = () => {
         } catch (err) {
           const status = err.response.status;
           const code = err.response.data.message;
-          if (status === 401 && code === null) {
+          if (status === 401 && code === "Unauthorized") {
             window.localStorage.removeItem("access_token");
             alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
           } else {
@@ -116,6 +118,7 @@ export const Lobby = () => {
       } catch (err) {
         const status = err.response.status;
         const code = err.response.data.message;
+        console.log(err);
         if (status === 401 && code === null) {
           window.localStorage.removeItem("access_token");
           alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
